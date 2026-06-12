@@ -142,6 +142,7 @@ class Driver {
             dumperFactory.getExceptionDumper().noteException(path, "Exception analysing jar", e);
             if (summaryDumper != null) summaryDumper.notify("Exception analysing jar " + e);
         } finally {
+            dumperFactory.close();
             if (summaryDumper != null) {
                 summaryDumper.close();
             }

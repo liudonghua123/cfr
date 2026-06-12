@@ -106,6 +106,11 @@ public class PluginRunner {
         public DumperFactory getFactoryWithPrefix(String prefix, int version) {
             return this;
         }
+
+        @Override
+        public void close() {
+            // No-op for PluginDumperFactory
+        }
     }
 
     public String getDecompilationFor(String classFilePath) {

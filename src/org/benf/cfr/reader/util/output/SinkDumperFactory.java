@@ -268,6 +268,11 @@ public class SinkDumperFactory implements DumperFactory {
         }
     }
 
+    @Override
+    public void close() {
+        // No-op for SinkDumperFactory
+    }
+
     private static class SinkProgressDumper implements ProgressDumper {
         OutputSinkFactory.Sink<String> progressSink;
 

@@ -28,6 +28,7 @@ public class InternalDumperFactoryImpl implements DumperFactory {
     private final ProgressDumper progressDumper;
     private final String prefix;
     private final AtomicInteger truncCount = new AtomicInteger();
+    private SingleFileDumper singleFileDumper = null;
 
     public InternalDumperFactoryImpl(Options options) {
         this.checkDupes = OsInfo.OS().isCaseInsensitive() && !options.getOption(OptionsImpl.CASE_INSENSITIVE_FS_RENAME);
@@ -46,6 +47,7 @@ public class InternalDumperFactoryImpl implements DumperFactory {
         this.options = other.options;
         this.progressDumper = other.progressDumper;
         this.prefix = prefix;
+        this.singleFileDumper = other.singleFileDumper;
     }
 
     @Override
@@ -64,8 +66,30 @@ public class InternalDumperFactoryImpl implements DumperFactory {
         return null;
     }
 
+    private String getSingleOutputPath() {
+        if (options.optionIsSet(OptionsImpl.SINGLE_OUTPUT)) {
+            return options.getOption(OptionsImpl.SINGLE_OUTPUT);
+        }
+        return null;
+    }
+
+    public void close() {
+        if (singleFileDumper != null) {
+            singleFileDumper.forceClose();
+        }
+    }
+
 
     public Dumper getNewTopLevelDumper(JavaTypeInstance classType, SummaryDumper summaryDumper, TypeUsageInformation typeUsageInformation, IllegalIdentifierDump illegalIdentifierDump) {
+        String singleOutputPath = getSingleOutputPath();
+        if (singleOutputPath != null) {
+            if (singleFileDumper == null) {
+                String encoding = options.getOption(OptionsImpl.OUTPUT_ENCODING);
+                singleFileDumper = new SingleFileDumper(singleOutputPath, encoding, typeUsageInformation, options, illegalIdentifierDump, new MovableDumperContext());
+            }
+            return singleFileDumper;
+        }
+
         Pair<String, Boolean> targetInfo = getPathAndClobber();
 
         if (targetInfo == null) return new StdIODumper(typeUsageInformation, options, illegalIdentifierDump, new MovableDumperContext());

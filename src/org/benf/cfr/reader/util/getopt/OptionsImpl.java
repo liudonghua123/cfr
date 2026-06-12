@@ -457,6 +457,9 @@ public class OptionsImpl implements Options {
     public static final PermittedOptionProvider.Argument<String> OUTPUT_PATH = register(new PermittedOptionProvider.Argument<String>(
             "outputpath", defaultNullStringDecoder,
             "Decompile to files in [directory]"));
+    public static final PermittedOptionProvider.Argument<String> SINGLE_OUTPUT = register(new PermittedOptionProvider.Argument<String>(
+            "singleoutput", defaultNullStringDecoder,
+            "Decompile all classes into a single [file] (like stdout redirect to file)"));
     public static final PermittedOptionProvider.Argument<String> OUTPUT_ENCODING = register(new PermittedOptionProvider.Argument<String>(
             "outputencoding", defaultNullStringDecoder,
             "saving decompiled files with specified encoding [encoding]"));
